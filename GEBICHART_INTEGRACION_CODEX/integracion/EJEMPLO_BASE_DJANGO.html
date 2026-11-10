@@ -1,0 +1,16 @@
+{# Fragmento orientativo: adaptar a los bloques y rutas EXISTENTES de base.html. #}
+{% load static %}
+{# Dentro de <head>: #}
+<link rel="icon" type="image/x-icon" href="{% static 'gebichart/favicon/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'gebichart/favicon/favicon-32.png' %}">
+<link rel="apple-touch-icon" href="{% static 'gebichart/favicon/apple-touch-icon.png' %}">
+<link rel="manifest" href="{% static 'gebichart/favicon/site.webmanifest' %}">
+<link rel="stylesheet" href="{% static 'gebichart/css/components.css' %}">
+{# Dentro de <body>, conservar menús y lógica de permisos del proyecto: #}
+<a href="#contenido-principal" class="gch-skip">Saltar al contenido principal</a>
+<header class="gch-header">
+  <img class="gch-header__logo" src="{% static 'gebichart/logo/gebichart-isotipo-transparente.png' %}" alt="" width="56" height="56">
+  <div><div class="gch-brand">GEBICH<span class="gch-brand__art">ART</span></div>
+  <small>Gestor de Bienes Culturales Histórico-Artísticos</small></div>
+</header>
+{# <main id="contenido-principal"> ... </main> en la plantilla del proyecto #}

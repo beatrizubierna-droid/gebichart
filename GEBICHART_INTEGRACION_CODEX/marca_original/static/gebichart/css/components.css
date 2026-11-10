@@ -1,0 +1,24 @@
+@import url('./tokens.css');
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--gch-font-ui);font-size:16px;line-height:1.5;color:var(--gch-text);background:var(--gch-cream)}
+h1,h2,h3,.gch-wordmark{font-family:var(--gch-font-brand);letter-spacing:-.015em}
+a{color:var(--gch-burgundy)}a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--gch-focus);outline-offset:3px}
+.gch-header{display:flex;align-items:center;gap:16px;padding:16px 24px;background:#fff;border-bottom:3px solid var(--gch-gold)}
+.gch-header__logo{height:56px;width:auto;object-fit:contain}
+.gch-brand{font-family:var(--gch-font-brand);font-size:1.55rem;font-weight:700;color:#000}
+.gch-brand__art{color:var(--gch-burgundy)}
+.gch-sidebar{background:var(--gch-burgundy);color:#fff;padding:20px 14px}
+.gch-sidebar a{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;padding:11px 14px;border-radius:var(--gch-radius-sm)}
+.gch-sidebar a:hover,.gch-sidebar a[aria-current='page']{background:#fff;color:var(--gch-burgundy)}
+.gch-sidebar img{height:22px;width:22px}
+.gch-card{background:#fff;border:1px solid var(--gch-line);border-radius:var(--gch-radius-md);padding:20px;box-shadow:var(--gch-shadow)}
+.gch-button{border:1px solid transparent;border-radius:var(--gch-radius-sm);padding:10px 16px;min-height:44px;font:600 1rem var(--gch-font-ui);cursor:pointer}
+.gch-button--primary{background:var(--gch-burgundy);color:#fff}.gch-button--secondary{background:#fff;color:var(--gch-burgundy);border-color:var(--gch-burgundy)}
+.gch-button--highlight{background:var(--gch-yellow);color:#231817}
+.gch-label{display:block;margin-bottom:4px;font-weight:600}
+.gch-input{width:100%;min-height:44px;padding:9px 12px;border:1px solid #858585;border-radius:var(--gch-radius-sm);font:inherit;background:#fff}
+.gch-table{width:100%;border-collapse:collapse;background:#fff}.gch-table th{text-align:left;background:#F4F0EB}.gch-table th,.gch-table td{padding:12px;border-bottom:1px solid var(--gch-line)}
+.gch-badge{display:inline-block;border-radius:100px;padding:3px 9px;font-weight:700;font-size:.82rem;background:#EAF3EA;color:#245A24}
+@media(max-width:760px){.gch-header{padding:12px}.gch-brand{font-size:1.3rem}.gch-card{padding:14px}}
+@media(prefers-reduced-motion:no-preference){.gch-button{transition:background .16s,color .16s}}
