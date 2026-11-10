@@ -7,3 +7,8 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+*.sqlite3
+staticfiles/
+media/
+work/

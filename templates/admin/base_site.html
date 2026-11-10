@@ -1,0 +1,5 @@
+{% extends 'admin/base.html' %}{% load static %}
+{% block title %}{{ title }} | GEBICHART{% endblock %}
+{% block extrastyle %}{{ block.super }}<style>:root,html[data-theme="light"]{--primary:#993333;--secondary:#702525;--accent:#FABC4D;--header-color:#fff;--header-branding-color:#fff;--header-bg:#993333;--link-fg:#993333;--link-selected-fg:#702525}#site-name a{display:flex;align-items:center;gap:16px}#site-name img{height:48px;width:auto;margin:8px;background:#fff;padding:4px}</style>{% endblock %}
+{% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'gebichart/logo/gebichart-isotipo-transparente.png' %}" alt="">GEBICHART</a></div>{% endblock %}
+{% block extrahead %}{{ block.super }}<link rel="icon" href="{% static 'gebichart/favicon/favicon.ico' %}">{% endblock %}
