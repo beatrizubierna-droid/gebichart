@@ -1,26 +1,24 @@
-{% extends 'base.html' %}{% load static %}
-{% block layout %}
-<div class="workspace">
-  <nav class="gch-sidebar" aria-label="Navegación principal">
-    <p class="nav-caption">ESPACIO DE TRABAJO</p>
-    <a href="{% url 'home' %}" aria-current="page"><img src="{% static 'gebichart/icons/inicio.svg' %}" alt="">Inicio</a>
-    {% if user.is_staff %}<a href="{% url 'admin:index' %}"><img src="{% static 'gebichart/icons/usuarios.svg' %}" alt="">Administración</a>{% endif %}
-    <p class="sidebar-note">Una identidad para proteger<br>lo que nos pertenece.</p>
-  </nav>
-  <main id="contenido" class="dashboard" tabindex="-1">
-    <p class="eyebrow">GEBICHART / INICIO</p>
-    <h1>El patrimonio, en un mismo lugar.</h1>
-    <p class="intro">Un espacio para clasificar, localizar y conservar los bienes culturales histórico-artísticos.</p>
-    <section class="gch-card welcome" aria-labelledby="welcome-title">
-      <div><span class="gch-badge">Configuración inicial</span><h2 id="welcome-title">Empezamos a construir el inventario</h2><p>El espacio de trabajo ya está preparado. El siguiente paso es definir los datos de las obras y sus ubicaciones.</p>{% if user.is_staff %}<a class="gch-button gch-button--primary" href="{% url 'admin:index' %}">Administrar usuarios</a>{% endif %}</div>
-      <img src="{% static 'gebichart/graphics/hero-abstract.svg' %}" alt="" class="hero-art">
-    </section>
-    <h2 class="section-title">La base de tu colección</h2>
-    <div class="feature-grid">
-      <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/inventario.svg' %}" alt=""><h3>Inventario</h3><p>Identificación, descripción y documentación de cada obra.</p><span class="planned">Pendiente de desarrollar</span></section>
-      <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/ubicaciones.svg' %}" alt=""><h3>Ubicaciones</h3><p>Edificios, plantas y espacios para localizar el patrimonio.</p><span class="planned">Pendiente de desarrollar</span></section>
-      <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/movimientos.svg' %}" alt=""><h3>Movimientos</h3><p>Seguimiento de traslados, cesiones y devoluciones.</p><span class="planned">Pendiente de desarrollar</span></section>
-    </div>
-  </main>
+{% extends 'gebichart/workspace.html' %}{% load static %}
+{% block workspace_content %}
+<p class="eyebrow">GEBICHART / INICIO</p>
+<h1>El patrimonio, en un mismo lugar.</h1>
+<p class="intro">Un espacio para clasificar, localizar y conservar los bienes culturales histórico-artísticos.</p>
+<section class="gch-card welcome" aria-labelledby="welcome-title">
+  <div>
+    <span class="gch-badge">Inventario de patrimonio</span>
+    <h2 id="welcome-title">Cada obra tiene su historia</h2>
+    {% if perms.gebichart.view_obra %}
+    <p>{{ total_obras }} obra{{ total_obras|pluralize:"s" }} registrada{{ total_obras|pluralize:"s" }}. Consulta las fichas y encuentra la información de tu colección.</p>
+    <div class="actions"><a class="gch-button gch-button--primary" href="{% url 'obra_list' %}">Abrir inventario</a>{% if perms.gebichart.add_obra %}<a class="gch-button gch-button--secondary" href="{% url 'obra_create' %}">Añadir obra</a>{% endif %}</div>
+    {% else %}<p>Tu cuenta está preparada. Solicita a la persona administradora el acceso al inventario.</p>{% endif %}
+    {% if user.is_staff %}<p><a href="{% url 'admin:index' %}">Administrar usuarios</a></p>{% endif %}
+  </div>
+  <img src="{% static 'gebichart/graphics/hero-abstract.svg' %}" alt="" class="hero-art">
+</section>
+<h2 class="section-title">La base de tu colección</h2>
+<div class="feature-grid">
+  <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/inventario.svg' %}" alt=""><h3>Inventario</h3><p>Identificación, descripción y documentación de cada obra.</p>{% if perms.gebichart.view_obra %}<a href="{% url 'obra_list' %}">Consultar obras</a>{% else %}<span class="planned">Requiere permiso de consulta</span>{% endif %}</section>
+  <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/ubicaciones.svg' %}" alt=""><h3>Ubicaciones</h3><p>La ubicación actual se registra en cada ficha. El catálogo de edificios y espacios se incorporará más adelante.</p><span class="planned">Catálogo pendiente de desarrollar</span></section>
+  <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/movimientos.svg' %}" alt=""><h3>Movimientos</h3><p>Seguimiento de traslados, cesiones y devoluciones.</p><span class="planned">Pendiente de desarrollar</span></section>
 </div>
 {% endblock %}
