@@ -14,10 +14,12 @@ Python 3.12 o posterior, SQLite local para desarrollo e identidad GEBICHART 3.0.
   La conservación parte de «Sin evaluar».
 - Galería por obra: selección múltiple al crear/editar y subida adicional desde
   la ficha, apertura de originales y eliminación con confirmación.
-- Administración Django de obras, usuarios y grupos.
+- Catálogo de edificios, plantas y ubicaciones, con alta/edición y consulta
+  de las obras asignadas a cada espacio.
+- Administración Django de obras, ubicaciones, usuarios y grupos.
 
-La ubicación actual es texto libre (edificio, planta y sala). El catálogo de
-ubicaciones, movimientos, cesiones e informes son próximos módulos.
+La ubicación actual puede vincularse al catálogo. El texto libre anterior se
+conserva como referencia. Movimientos, cesiones e informes son próximos módulos.
 No se incluyen datos municipales ni conexiones MariaDB/Active Directory.
 
 ## Primera instalación
@@ -73,8 +75,8 @@ Con el superusuario, entra en `/admin/` y asigna grupos a cada usuario:
 
 | Grupo | Permisos en el inventario |
 | --- | --- |
-| Consulta inventario | Consultar listado y fichas |
-| Gestión inventario | Consultar, añadir y editar obras |
+| Consulta inventario | Consultar obras y catálogo de ubicaciones |
+| Gestión inventario | Consultar, añadir y editar obras, edificios, plantas y ubicaciones |
 
 `python manage.py crear_roles` es idempotente: prepara los grupos y no asigna
 usuarios. No concede permiso de borrado. Para usar el inventario no hace falta
@@ -152,3 +154,40 @@ para producción se necesita almacenamiento persistente y acceso privado equival
 
 Las capturas `docs/screenshots/galeria-1440.jpg` y `galeria-375.jpg` muestran
 la galería con imágenes sintéticas de prueba, sin obras ni datos reales.
+
+## Edificios, plantas y ubicaciones
+
+1. Entra en **Ubicaciones → Añadir edificio** y registra su código, nombre y,
+   opcionalmente, dirección y descripción.
+2. En el edificio pulsa **Añadir planta**. El orden permite situar sótanos
+   antes de la planta baja y las plantas superiores.
+3. En una planta pulsa **Añadir ubicación** para registrar una sala, depósito
+   u otro espacio. Puedes abrir su ficha para consultar las obras asignadas.
+4. En **Editar ficha** de una obra, selecciona **Ubicación del catálogo**.
+   También puedes utilizar **Añadir obra aquí** desde la ficha de un espacio.
+
+La ubicación en texto libre se mantiene exactamente como estaba. No se intentan
+interpretar ni convertir automáticamente las ubicaciones anteriores. Si seleccionas
+un espacio del catálogo, su ruta completa pasa a ser la ubicación actual y el
+texto previo sigue apareciendo como referencia. Quitar la selección del catálogo
+vuelve a mostrar el texto libre. Las fotografías y los otros datos se conservan.
+
+El inventario permite buscar por edificio, planta o espacio y filtrar por edificio.
+El catálogo se puede buscar por código/nombre del edificio, dirección, planta o espacio.
+Las listas de edificios y de obras de un espacio tienen paginación.
+
+Los códigos de edificio son únicos; los nombres de plantas no pueden repetirse
+dentro del mismo edificio, ni los nombres de espacios dentro de una planta.
+Al editar se pueden corregir etiquetas y descripciones, pero no cambiar el edificio
+de una planta existente ni la planta de un espacio existente. Para ubicar una obra
+en otro lugar, edita la ubicación del catálogo en su ficha. El historial de movimientos
+se incorporará en su propio módulo.
+
+La base de datos protege de borrado los edificios con plantas, las plantas con
+espacios y los espacios con obras asignadas. Los grupos de consulta/gestión se
+actualizan con `python manage.py crear_roles`, ejecutado automáticamente por
+`bash scripts/dev.sh`; se conservan las pertenencias de los usuarios y no se conceden
+permisos de borrado. La gestión del catálogo también está disponible en administración.
+
+Las capturas `ubicaciones-1440.jpg`, `ubicaciones-375.jpg`, `espacio-1440.jpg` y
+`espacio-375.jpg` de `docs/screenshots/` muestran datos ficticios de revisión.

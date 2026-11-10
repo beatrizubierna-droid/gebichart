@@ -18,7 +18,7 @@
 <h2 class="section-title">La base de tu colección</h2>
 <div class="feature-grid">
   <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/inventario.svg' %}" alt=""><h3>Inventario</h3><p>Identificación, descripción y documentación de cada obra.</p>{% if perms.gebichart.view_obra %}<a href="{% url 'obra_list' %}">Consultar obras</a>{% else %}<span class="planned">Requiere permiso de consulta</span>{% endif %}</section>
-  <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/ubicaciones.svg' %}" alt=""><h3>Ubicaciones</h3><p>La ubicación actual se registra en cada ficha. El catálogo de edificios y espacios se incorporará más adelante.</p><span class="planned">Catálogo pendiente de desarrollar</span></section>
+  <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/ubicaciones.svg' %}" alt=""><h3>Ubicaciones</h3><p>Organiza edificios, plantas y espacios y consulta las obras que albergan.</p>{% if perms.gebichart.view_edificio and perms.gebichart.view_planta and perms.gebichart.view_ubicacion %}<a href="{% url 'catalogo' %}">Consultar ubicaciones</a>{% else %}<span class="planned">Requiere permiso de consulta del catálogo</span>{% endif %}</section>
   <section class="gch-card"><img class="feature-icon" src="{% static 'gebichart/icons/movimientos.svg' %}" alt=""><h3>Movimientos</h3><p>Seguimiento de traslados, cesiones y devoluciones.</p><span class="planned">Pendiente de desarrollar</span></section>
 </div>
 {% endblock %}

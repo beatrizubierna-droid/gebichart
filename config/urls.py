@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from gebichart import views
+from gebichart import catalogo, views
 
 admin.site.site_header = 'Administración de GEBICHART'
 admin.site.site_title = 'GEBICHART'
@@ -22,5 +22,15 @@ urlpatterns = [
          name='foto_file'),
     path('inventario/<int:obra_pk>/imagenes/<int:pk>/eliminar/', views.FotoDeleteView.as_view(),
          name='foto_delete'),
+    path('ubicaciones/', catalogo.CatalogoListView.as_view(), name='catalogo'),
+    path('ubicaciones/edificios/nuevo/', catalogo.EdificioCreateView.as_view(), name='edificio_create'),
+    path('ubicaciones/edificios/<int:pk>/editar/', catalogo.EdificioUpdateView.as_view(),
+         name='edificio_update'),
+    path('ubicaciones/plantas/nueva/', catalogo.PlantaCreateView.as_view(), name='planta_create'),
+    path('ubicaciones/plantas/<int:pk>/editar/', catalogo.PlantaUpdateView.as_view(), name='planta_update'),
+    path('ubicaciones/espacios/nuevo/', catalogo.UbicacionCreateView.as_view(), name='ubicacion_create'),
+    path('ubicaciones/espacios/<int:pk>/', catalogo.UbicacionDetailView.as_view(), name='ubicacion_detail'),
+    path('ubicaciones/espacios/<int:pk>/editar/', catalogo.UbicacionUpdateView.as_view(),
+         name='ubicacion_update'),
     path('admin/', admin.site.urls),
 ]

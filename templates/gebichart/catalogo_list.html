@@ -1,0 +1,20 @@
+{% extends 'gebichart/workspace.html' %}{% load static %}
+{% block title %}Edificios y ubicaciones · GEBICHART{% endblock %}
+{% block workspace_content %}
+<p class="eyebrow">PATRIMONIO / UBICACIONES</p>
+<div class="page-heading"><div><h1>Un lugar para cada obra</h1><p class="intro">Organiza el patrimonio por edificio, planta y espacio.</p></div>{% if perms.gebichart.add_edificio %}<a class="gch-button gch-button--primary" href="{% url 'edificio_create' %}">Añadir edificio</a>{% endif %}</div>
+<form method="get" class="gch-card search-form" role="search" aria-label="Buscar ubicaciones"><div class="search-query"><label class="gch-label" for="q">Buscar en el catálogo</label><input class="gch-input" id="q" name="q" type="search" value="{{ q }}" placeholder="Edificio, planta o espacio"></div><button class="gch-button gch-button--primary" type="submit">Buscar</button>{% if q or edificio_seleccionado %}<a href="{% url 'catalogo' %}">Ver catálogo completo</a>{% endif %}</form>
+<p class="results-count">{{ paginator.count }} edificio{{ paginator.count|pluralize:'s' }}{% if q %} con coincidencias{% endif %}</p>
+{% for edificio in edificios %}
+<section class="gch-card building-card" id="edificio-{{ edificio.pk }}" aria-labelledby="edificio-title-{{ edificio.pk }}">
+  <div class="catalog-heading"><div><p class="eyebrow">{{ edificio.codigo }}</p><h2 id="edificio-title-{{ edificio.pk }}">{{ edificio.nombre }}</h2>{% if edificio.direccion %}<p class="muted">{{ edificio.direccion }}</p>{% endif %}</div><div class="actions">{% if perms.gebichart.change_edificio %}<a href="{% url 'edificio_update' edificio.pk %}">Editar edificio</a>{% endif %}{% if perms.gebichart.add_planta %}<a class="gch-button gch-button--secondary" href="{% url 'planta_create' %}?edificio={{ edificio.pk }}">Añadir planta</a>{% endif %}</div></div>
+  {% if edificio.descripcion %}<div class="record-text">{{ edificio.descripcion|linebreaks }}</div>{% endif %}
+  {% for planta in edificio.plantas.all %}
+  <section class="floor-section" aria-labelledby="planta-title-{{ planta.pk }}"><div class="catalog-heading"><h3 id="planta-title-{{ planta.pk }}">{{ planta.nombre }}</h3><div class="actions">{% if perms.gebichart.change_planta %}<a href="{% url 'planta_update' planta.pk %}">Editar planta</a>{% endif %}{% if perms.gebichart.add_ubicacion %}<a href="{% url 'ubicacion_create' %}?planta={{ planta.pk }}">Añadir ubicación</a>{% endif %}</div></div>
+    <div class="room-grid">{% for espacio in planta.ubicaciones.all %}<a class="room-link" href="{{ espacio.get_absolute_url }}"><span>{{ espacio.nombre }}</span>{% if perms.gebichart.view_obra %}<small>{{ espacio.total_obras }} obra{{ espacio.total_obras|pluralize:'s' }}</small>{% endif %}<span aria-hidden="true">→</span></a>{% empty %}<p class="muted">Esta planta todavía no tiene ubicaciones.</p>{% endfor %}</div>
+  </section>
+  {% empty %}<p class="gallery-empty">Añade la primera planta para organizar los espacios de este edificio.</p>{% endfor %}
+</section>
+{% empty %}<section class="gch-card empty-state"><img src="{% static 'gebichart/icons/edificios.svg' %}" alt=""><h2>{% if q %}No hay edificios que coincidan{% else %}Empieza por un edificio{% endif %}</h2><p>{% if q %}Prueba con otro nombre o elimina la búsqueda.{% else %}Después podrás añadir sus plantas y las salas o espacios de cada planta.{% endif %}</p>{% if not q and perms.gebichart.add_edificio %}<a class="gch-button gch-button--primary" href="{% url 'edificio_create' %}">Registrar el primer edificio</a>{% endif %}</section>{% endfor %}
+{% if is_paginated %}<nav class="pagination" aria-label="Páginas del catálogo">{% if page_obj.has_previous %}<a class="gch-button gch-button--secondary" href="?q={{ q|urlencode }}&amp;page={{ page_obj.previous_page_number }}">Anterior</a>{% endif %}<span>Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>{% if page_obj.has_next %}<a class="gch-button gch-button--secondary" href="?q={{ q|urlencode }}&amp;page={{ page_obj.next_page_number }}">Siguiente</a>{% endif %}</nav>{% endif %}
+{% endblock %}

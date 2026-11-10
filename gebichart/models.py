@@ -40,6 +40,10 @@ class Obra(models.Model):
                                    default=Conservacion.SIN_EVALUAR)
     ubicacion = models.CharField('ubicación actual', max_length=255, blank=True,
                                 help_text='Edificio, planta y sala, si se conocen.')
+    espacio = models.ForeignKey(
+        'Ubicacion', verbose_name='ubicación del catálogo', blank=True, null=True,
+        on_delete=models.PROTECT, related_name='obras',
+    )
     descripcion = models.TextField('descripción', blank=True, max_length=10000)
     observaciones = models.TextField('observaciones', blank=True, max_length=10000)
     creado_en = models.DateTimeField('fecha de alta', auto_now_add=True)
@@ -49,6 +53,10 @@ class Obra(models.Model):
         ordering = ('codigo', 'pk')
         verbose_name = 'obra'
         verbose_name_plural = 'obras'
+
+    @property
+    def ubicacion_actual(self):
+        return str(self.espacio) if self.espacio_id else self.ubicacion
 
     def __str__(self):
         return f'{self.codigo} · {self.titulo}'
@@ -80,3 +88,63 @@ class FotoObra(models.Model):
 
     def __str__(self):
         return f'Fotografía de {self.obra.codigo}'
+
+
+class Edificio(models.Model):
+    codigo = models.CharField('código', max_length=32, unique=True, validators=[RegexValidator(
+        r'^[A-Z0-9][A-Z0-9._/-]*$', 'Usa letras A–Z, números, puntos, guiones o barras.',
+    )])
+    nombre = models.CharField('nombre', max_length=150)
+    direccion = models.CharField('dirección', max_length=255, blank=True)
+    descripcion = models.TextField('descripción', max_length=5000, blank=True)
+
+    class Meta:
+        ordering = ('nombre', 'pk')
+        verbose_name = 'edificio'
+        verbose_name_plural = 'edificios'
+
+    def __str__(self):
+        return f'{self.codigo} · {self.nombre}'
+
+    def get_absolute_url(self):
+        return reverse('catalogo') + f'?edificio={self.pk}#edificio-{self.pk}'
+
+
+class Planta(models.Model):
+    edificio = models.ForeignKey(Edificio, on_delete=models.PROTECT, related_name='plantas')
+    nombre = models.CharField('nombre de la planta', max_length=100)
+    orden = models.IntegerField('orden', default=0, help_text='Por ejemplo: sótano −1, baja 0, primera 1.')
+
+    class Meta:
+        ordering = ('edificio__nombre', 'orden', 'nombre', 'pk')
+        verbose_name = 'planta'
+        verbose_name_plural = 'plantas'
+        constraints = (
+            models.UniqueConstraint(fields=('edificio', 'nombre'), name='planta_unica_edificio'),
+        )
+
+    def __str__(self):
+        return f'{self.edificio} / {self.nombre}'
+
+    def get_absolute_url(self):
+        return self.edificio.get_absolute_url()
+
+
+class Ubicacion(models.Model):
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, related_name='ubicaciones')
+    nombre = models.CharField('nombre del espacio', max_length=150)
+    descripcion = models.TextField('descripción', max_length=5000, blank=True)
+
+    class Meta:
+        ordering = ('planta__edificio__nombre', 'planta__orden', 'planta__nombre', 'nombre', 'pk')
+        verbose_name = 'ubicación'
+        verbose_name_plural = 'ubicaciones'
+        constraints = (
+            models.UniqueConstraint(fields=('planta', 'nombre'), name='ubicacion_unica_planta'),
+        )
+
+    def __str__(self):
+        return f'{self.planta} / {self.nombre}'
+
+    def get_absolute_url(self):
+        return reverse('ubicacion_detail', kwargs={'pk': self.pk})

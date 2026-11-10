@@ -1,0 +1,10 @@
+{% extends 'gebichart/workspace.html' %}
+{% block title %}{{ titulo }} · GEBICHART{% endblock %}
+{% block workspace_content %}
+<a class="back-link" href="{% url 'catalogo' %}">← Volver a ubicaciones</a>
+<p class="eyebrow">CATÁLOGO / EDIFICIOS Y ESPACIOS</p><h1>{{ titulo }}</h1><p class="intro">Los campos marcados con * son obligatorios.</p>
+<form method="post" class="gch-card obra-form">{% csrf_token %}
+{% if form.errors %}<div class="error" role="alert"><strong>No se han guardado los datos.</strong>{{ form.non_field_errors }}<ul>{% for field in form %}{% for error in field.errors %}<li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>{% endfor %}{% endfor %}</ul></div>{% endif %}
+<div class="form-grid">{% for field in form %}<div class="form-field{% if field.name == 'descripcion' %} form-field-wide{% endif %}"><label class="gch-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>{{ field }}{% if field.help_text %}<p class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}{% if field.errors %}<ul class="errorlist" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}</div>
+<div class="form-actions"><button class="gch-button gch-button--primary" type="submit">Guardar</button><a class="gch-button gch-button--secondary" href="{% url 'catalogo' %}">Cancelar</a></div></form>
+{% endblock %}

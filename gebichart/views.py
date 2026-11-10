@@ -10,7 +10,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 
 from .forms import GaleriaForm, ObraConFotosForm
 from .gallery import gallery_transaction, guardar_fotos
-from .models import FotoObra, Obra
+from .models import Edificio, FotoObra, Obra, Ubicacion
 
 
 @login_required
@@ -30,12 +30,15 @@ class ObraListView(InventarioAccessMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related('espacio__planta__edificio')
         query = self.request.GET.get('q', '').strip()
         if query:
             queryset = queryset.filter(
                 Q(codigo__icontains=query) | Q(titulo__icontains=query)
                 | Q(autoria__icontains=query) | Q(ubicacion__icontains=query)
+                | Q(espacio__nombre__icontains=query) | Q(espacio__planta__nombre__icontains=query)
+                | Q(espacio__planta__edificio__nombre__icontains=query)
+                | Q(espacio__planta__edificio__codigo__icontains=query)
             )
         tipo = self.request.GET.get('tipo', '')
         if tipo:
@@ -43,6 +46,10 @@ class ObraListView(InventarioAccessMixin, ListView):
         conservacion = self.request.GET.get('conservacion', '')
         if conservacion:
             queryset = queryset.filter(conservacion=conservacion)
+        edificio = self.request.GET.get('edificio', '')
+        if edificio:
+            queryset = (queryset.filter(espacio__planta__edificio_id=edificio)
+                        if edificio.isdecimal() else queryset.none())
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -55,6 +62,8 @@ class ObraListView(InventarioAccessMixin, ListView):
             'conservacion': self.request.GET.get('conservacion', ''),
             'tipos': Obra.Tipo.choices,
             'estados': Obra.Conservacion.choices,
+            'edificios': Edificio.objects.all(),
+            'edificio': self.request.GET.get('edificio', ''),
             'filtros': params.urlencode(),
         })
         return context
@@ -64,6 +73,7 @@ class ObraDetailView(InventarioAccessMixin, DetailView):
     model = Obra
     template_name = 'gebichart/obra_detail.html'
     context_object_name = 'obra'
+    queryset = Obra.objects.select_related('espacio__planta__edificio')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -86,6 +96,13 @@ class ObraSaveMixin(InventarioAccessMixin):
 
 class ObraCreateView(ObraSaveMixin, CreateView):
     permission_required = ('gebichart.view_obra', 'gebichart.add_obra')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        espacio = self.request.GET.get('espacio', '')
+        if espacio.isdecimal() and Ubicacion.objects.filter(pk=espacio).exists():
+            initial['espacio'] = espacio
+        return initial
 
 
 class ObraUpdateView(ObraSaveMixin, UpdateView):
