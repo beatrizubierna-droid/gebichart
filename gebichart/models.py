@@ -55,3 +55,28 @@ class Obra(models.Model):
 
     def get_absolute_url(self):
         return reverse('obra_detail', kwargs={'pk': self.pk})
+
+
+def foto_upload_path(instance, filename):
+    from pathlib import Path
+    from uuid import uuid4
+
+    return f'obras/{instance.obra_id}/{uuid4().hex}{Path(filename).suffix.lower()}'
+
+
+class FotoObra(models.Model):
+    obra = models.ForeignKey(Obra, on_delete=models.CASCADE, related_name='fotos')
+    imagen = models.ImageField('imagen', upload_to=foto_upload_path, max_length=200)
+    descripcion = models.CharField('descripción', max_length=255, blank=True)
+    creado_en = models.DateTimeField('fecha de subida', auto_now_add=True)
+
+    class Meta:
+        ordering = ('creado_en', 'pk')
+        verbose_name = 'fotografía de obra'
+        verbose_name_plural = 'fotografías de obras'
+
+    def get_absolute_url(self):
+        return reverse('foto_file', kwargs={'obra_pk': self.obra_id, 'pk': self.pk})
+
+    def __str__(self):
+        return f'Fotografía de {self.obra.codigo}'

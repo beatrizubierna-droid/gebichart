@@ -1,0 +1,24 @@
+<section class="gch-card gallery-section" id="galeria" aria-labelledby="gallery-title">
+  <h2 id="gallery-title">Galería de imágenes</h2>
+  <p class="muted">{{ obra.fotos.count }} {% if obra.fotos.count == 1 %}imagen{% else %}imágenes{% endif %}. Selecciona una fotografía para abrirla a tamaño completo.</p>
+  {% if obra.fotos.exists %}
+  <div class="photo-grid">
+    {% for foto in obra.fotos.all %}
+    <figure class="photo-card">
+      <a href="{{ foto.get_absolute_url }}" target="_blank" rel="noopener" aria-label="Abrir imagen {{ forloop.counter }} de {{ obra.titulo }} (nueva pestaña)"><img src="{{ foto.get_absolute_url }}" alt="{% if foto.descripcion %}{{ foto.descripcion }}{% else %}Fotografía {{ forloop.counter }} de {{ obra.titulo }}{% endif %}" loading="lazy"></a>
+      <figcaption>{% if foto.descripcion %}{{ foto.descripcion }}{% else %}Fotografía {{ forloop.counter }}{% endif %}</figcaption>
+      {% if perms.gebichart.change_obra %}<a class="photo-delete" href="{% url 'foto_delete' obra.pk foto.pk %}">Eliminar imagen {{ forloop.counter }}</a>{% endif %}
+    </figure>
+    {% endfor %}
+  </div>
+  {% else %}<p class="gallery-empty">Esta obra todavía no tiene fotografías.</p>{% endif %}
+  {% if perms.gebichart.change_obra %}
+  <form method="post" action="{% url 'foto_upload' obra.pk %}#galeria" enctype="multipart/form-data" class="gallery-upload">
+    {% csrf_token %}
+    <h3>Añadir imágenes</h3>
+    {% if galeria_form.errors %}<div class="error" role="alert"><strong>No se ha añadido ninguna imagen.</strong><p>Revisa la selección. Por seguridad, tendrás que seleccionar los archivos de nuevo.</p>{{ galeria_form.non_field_errors }}</div>{% endif %}
+    {% for field in galeria_form %}<div class="form-field"><label class="gch-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<p class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}{% if field.errors %}<ul class="errorlist" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
+    <button class="gch-button gch-button--primary" type="submit">Subir imágenes</button>
+  </form>
+  {% endif %}
+</section>

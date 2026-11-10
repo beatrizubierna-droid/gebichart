@@ -4,12 +4,13 @@
 <a class="back-link" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'obra_list' %}{% endif %}">← {% if object %}Volver a la ficha{% else %}Volver al inventario{% endif %}</a>
 <p class="eyebrow">INVENTARIO / {% if object %}EDICIÓN{% else %}ALTA DE OBRA{% endif %}</p>
 <h1>{% if object %}Editar {{ object.codigo }}{% else %}Registrar una obra{% endif %}</h1>
+{% if object %}<p><a href="{{ object.get_absolute_url }}#galeria">Ver y gestionar las fotografías existentes</a></p>{% endif %}
 <p class="intro">Los campos marcados con * son obligatorios. Puedes completar el resto más adelante.</p>
-<form method="post" class="gch-card obra-form">
+<form method="post" enctype="multipart/form-data" class="gch-card obra-form">
   {% csrf_token %}
   {% if form.errors %}<div class="error" role="alert"><strong>No se ha guardado la obra.</strong><p>Revisa los campos indicados:</p><ul>{% for field in form %}{% for error in field.errors %}<li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>{% endfor %}{% endfor %}</ul>{{ form.non_field_errors }}</div>{% endif %}
   <div class="form-grid">
-  {% for field in form %}<div class="form-field{% if field.name == 'descripcion' or field.name == 'observaciones' %} form-field-wide{% endif %}"><label class="gch-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>{{ field }}{% if field.help_text %}<p class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}{% if field.errors %}<ul class="errorlist" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
+  {% for field in form %}<div class="form-field{% if field.name == 'descripcion' or field.name == 'observaciones' or field.name == 'fotos' %} form-field-wide{% endif %}"><label class="gch-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>{{ field }}{% if field.help_text %}<p class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}{% if field.errors %}<ul class="errorlist" id="{{ field.auto_id }}_error">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
   </div>
   <div class="form-actions"><button class="gch-button gch-button--primary" type="submit">Guardar obra</button><a class="gch-button gch-button--secondary" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'obra_list' %}{% endif %}">Cancelar</a></div>
 </form>

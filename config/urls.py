@@ -16,5 +16,11 @@ urlpatterns = [
     path('inventario/nueva/', views.ObraCreateView.as_view(), name='obra_create'),
     path('inventario/<int:pk>/', views.ObraDetailView.as_view(), name='obra_detail'),
     path('inventario/<int:pk>/editar/', views.ObraUpdateView.as_view(), name='obra_update'),
+    path('inventario/<int:obra_pk>/imagenes/subir/', views.FotoUploadView.as_view(),
+         name='foto_upload'),
+    path('inventario/<int:obra_pk>/imagenes/<int:pk>/archivo/', views.FotoFileView.as_view(),
+         name='foto_file'),
+    path('inventario/<int:obra_pk>/imagenes/<int:pk>/eliminar/', views.FotoDeleteView.as_view(),
+         name='foto_delete'),
     path('admin/', admin.site.urls),
 ]

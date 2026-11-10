@@ -140,3 +140,8 @@ if not DEBUG:
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get(
     "DJANGO_CSRF_TRUSTED_ORIGINS", ""
 ).split(",") if origin.strip()]
+
+# Private photographs are served through permission-checked views, never /media/.
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+DATA_UPLOAD_MAX_NUMBER_FILES = 20

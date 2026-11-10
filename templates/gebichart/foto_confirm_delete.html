@@ -1,0 +1,12 @@
+{% extends 'gebichart/workspace.html' %}
+{% block title %}Eliminar imagen · GEBICHART{% endblock %}
+{% block workspace_content %}
+<a class="back-link" href="{{ foto.obra.get_absolute_url }}#galeria">← Volver a la galería</a>
+<p class="eyebrow">{{ foto.obra.codigo }} / GALERÍA</p>
+<h1>¿Eliminar esta imagen?</h1>
+<section class="gch-card photo-confirm">
+  <img src="{{ foto.get_absolute_url }}" alt="{{ foto.descripcion|default:foto.obra.titulo }}">
+  <p>Se eliminará esta fotografía de «{{ foto.obra.titulo }}». Esta acción no se puede deshacer.</p>
+  <form method="post">{% csrf_token %}<div class="actions"><button class="gch-button gch-button--primary" type="submit">Confirmar eliminación</button><a class="gch-button gch-button--secondary" href="{{ foto.obra.get_absolute_url }}#galeria">Cancelar</a></div></form>
+</section>
+{% endblock %}
