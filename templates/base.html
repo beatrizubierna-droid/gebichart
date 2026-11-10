@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}GEBICHART · Patrimonio cultural{% endblock %}</title>
+  <link rel="icon" href="{% static 'gebichart/favicon/favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'gebichart/favicon/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'gebichart/favicon/site.webmanifest' %}">
+  <link rel="stylesheet" href="{% static 'gebichart/css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'gebichart/css/app.css' %}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<header class="gch-header">
+  <a class="brand-link" href="{% url 'home' %}" aria-label="GEBICHART, inicio">
+    <img class="gch-header__logo" src="{% static 'gebichart/logo/gebichart-isotipo-transparente.png' %}" alt="">
+    <span class="gch-brand">GEBICH<span class="gch-brand__art">ART</span></span>
+  </a>
+  <span class="brand-caption">Gestión de bienes culturales<br>histórico-artísticos</span>
+  {% if user.is_authenticated %}
+  <div class="account"><span>{{ user.get_username }}</span><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="gch-button gch-button--secondary" type="submit">Cerrar sesión</button></form></div>
+  {% endif %}
+</header>
+{% block layout %}<main id="contenido" class="login-main" tabindex="-1">{% block content %}{% endblock %}</main>{% endblock %}
+<footer>GEBICHART <span>·</span> Clasificar, localizar y conservar.</footer>
+</body>
+</html>
