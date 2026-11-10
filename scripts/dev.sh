@@ -3,6 +3,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 if [[ ! -x .venv/bin/python ]]; then
   bash scripts/setup.sh
+else
+  .venv/bin/python -m pip install -e '.[dev]'
 fi
 # Exact development origins; CSRF remains enabled.
 gebichart_hosts="localhost,127.0.0.1,[::1]"

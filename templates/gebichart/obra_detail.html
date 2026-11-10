@@ -9,4 +9,5 @@
 <section class="gch-card"><h2>Localización y conservación</h2><dl class="record-fields"><div><dt>Ubicación actual</dt><dd>{{ obra.ubicacion|default:'Sin registrar' }}</dd></div><div><dt>Estado de conservación</dt><dd><span class="status-pill status-{{ obra.conservacion }}">{{ obra.get_conservacion_display }}</span></dd></div></dl><p class="muted">Última actualización: {{ obra.actualizado_en|date:'d/m/Y H:i' }}</p></section>
 <section class="gch-card record-description"><h2>Descripción</h2><div class="record-text">{{ obra.descripcion|default:'Sin descripción registrada.'|linebreaks }}</div><h2>Observaciones</h2><div class="record-text">{{ obra.observaciones|default:'Sin observaciones.'|linebreaks }}</div><p class="muted">Fecha de alta: {{ obra.creado_en|date:'d/m/Y H:i' }}</p></section>
 </div>
+{% include "gebichart/galeria.html" %}
 {% endblock %}

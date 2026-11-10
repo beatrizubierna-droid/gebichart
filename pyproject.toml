@@ -3,7 +3,7 @@ name = "gebichart"
 version = "0.1.0"
 description = "Entorno de desarrollo de gebichart"
 requires-python = ">=3.12"
-dependencies = ["Django>=5.2,<5.3"]
+dependencies = ["Django>=5.2,<5.3", "Pillow>=12,<13"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.14,<1"]

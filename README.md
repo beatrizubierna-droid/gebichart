@@ -12,10 +12,12 @@ Python 3.12 o posterior, SQLite local para desarrollo e identidad GEBICHART 3.0.
 - Código de inventario único, título y tipo obligatorios. Autoría, técnica,
   datación, dimensiones, ubicación, descripción y observaciones opcionales.
   La conservación parte de «Sin evaluar».
+- Galería por obra: selección múltiple al crear/editar y subida adicional desde
+  la ficha, apertura de originales y eliminación con confirmación.
 - Administración Django de obras, usuarios y grupos.
 
 La ubicación actual es texto libre (edificio, planta y sala). El catálogo de
-ubicaciones, fotografías, movimientos, cesiones e informes son próximos módulos.
+ubicaciones, movimientos, cesiones e informes son próximos módulos.
 No se incluyen datos municipales ni conexiones MariaDB/Active Directory.
 
 ## Primera instalación
@@ -48,7 +50,8 @@ git pull --ff-only
 bash scripts/dev.sh
 ```
 
-El script crea el entorno virtual si falta, aplica las migraciones, prepara los
+El script crea el entorno virtual si falta, instala las dependencias actualizadas,
+aplica las migraciones y prepara los
 grupos y arranca Django. Conserva los datos de SQLite existentes; no borres
 `db.sqlite3`. Detén un servidor anterior con **Ctrl+C** antes de arrancarlo.
 
@@ -118,3 +121,34 @@ Las capturas de `docs/screenshots/inventario-*`, `ficha-*` y `formulario-*`
 contienen únicamente datos ficticios de revisión, que no se cargan en la base
 de datos de la aplicación. Las capturas `home-*` y `login-desktop.jpg` documentan
 la primera versión.
+
+## Galería de imágenes
+
+En **Añadir obra** y **Editar ficha** puedes seleccionar varias fotografías.
+También puedes abrir una ficha y usar **Galería de imágenes → Seleccionar imágenes
+→ Subir imágenes**. La descripción opcional se aplica al conjunto seleccionado.
+Al editar sin seleccionar nuevos archivos se conservan todas las imágenes existentes.
+Para eliminar una imagen, utiliza su enlace **Eliminar imagen** y confirma la acción.
+Selecciona la miniatura para abrir el original en otra pestaña.
+
+- Formatos admitidos: JPG, PNG y WebP, comprobados por contenido con Pillow.
+- Límites: 10 MB y 40 megapíxeles por imagen; 10 archivos y 50 MB por envío.
+- Consulta: permiso `view_obra`. Subida/eliminación en una obra existente:
+  `view_obra` + `change_obra`. Durante el alta, basta con `view_obra` + `add_obra`.
+  Los grupos existentes ya incluyen los permisos correspondientes.
+- Las imágenes se guardan en `media/`, fuera de Git, con nombres aleatorios.
+  Se conservan los bytes originales y no se alteran las fotografías.
+- Los archivos se sirven mediante rutas protegidas de la aplicación, también
+  para lectores. No existe una ruta pública `/media/`.
+- Las eliminaciones borran el archivo después de confirmar la transacción;
+  una subida fallida revierte los registros y limpia los archivos escritos.
+- En administración Django, guarda la obra y utiliza **Ver y gestionar fotografías**
+  para abrir la galería de la ficha.
+
+Al actualizar, `bash scripts/dev.sh` instala Pillow y aplica la nueva migración.
+Recarga la ficha después de reiniciar el servidor. Las copias de seguridad deben
+incluir `db.sqlite3` **y** `media/`. El almacenamiento de un Codespace es de desarrollo;
+para producción se necesita almacenamiento persistente y acceso privado equivalente.
+
+Las capturas `docs/screenshots/galeria-1440.jpg` y `galeria-375.jpg` muestran
+la galería con imágenes sintéticas de prueba, sin obras ni datos reales.
