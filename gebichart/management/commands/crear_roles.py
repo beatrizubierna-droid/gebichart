@@ -6,13 +6,15 @@ class Command(BaseCommand):
     help = 'Crea grupos de consulta y gestión del inventario, sin asignar usuarios.'
 
     def handle(self, *args, **options):
+        modelos = ('obra', 'edificio', 'planta', 'ubicacion')
         roles = {
-            'Consulta inventario': ['view_obra'],
-            'Gestión inventario': ['view_obra', 'add_obra', 'change_obra'],
+            'Consulta inventario': [f'view_{model}' for model in modelos],
+            'Gestión inventario': [f'{action}_{model}' for model in modelos
+                                  for action in ('view', 'add', 'change')],
         }
         for nombre, codigos in roles.items():
             permissions = Permission.objects.filter(
-                content_type__app_label='gebichart', content_type__model='obra',
+                content_type__app_label='gebichart', content_type__model__in=modelos,
                 codename__in=codigos,
             )
             if permissions.count() != len(codigos):

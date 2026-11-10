@@ -180,8 +180,8 @@ class InventarioTests(TestCase):
     def test_role_command_is_idempotent_and_does_not_assign_users(self):
         call_command('crear_roles', stdout=StringIO())
         call_command('crear_roles', stdout=StringIO())
-        self.assertEqual(Group.objects.get(name='Consulta inventario').permissions.count(), 1)
-        self.assertEqual(Group.objects.get(name='Gestión inventario').permissions.count(), 3)
+        self.assertEqual(Group.objects.get(name='Consulta inventario').permissions.count(), 4)
+        self.assertEqual(Group.objects.get(name='Gestión inventario').permissions.count(), 12)
         self.assertFalse(self.sin_acceso.groups.exists())
         self.assertFalse(self.editor.has_perm('gebichart.delete_obra'))
 

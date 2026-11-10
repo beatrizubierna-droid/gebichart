@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from django import forms
 
-from .models import Obra
+from .models import Edificio, Obra, Planta, Ubicacion
 
 
 class ObraForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class ObraForm(forms.ModelForm):
         model = Obra
         fields = (
             'codigo', 'titulo', 'autoria', 'tipo', 'tecnica', 'datacion',
-            'dimensiones', 'conservacion', 'ubicacion', 'descripcion', 'observaciones',
+            'dimensiones', 'conservacion', 'espacio', 'ubicacion', 'descripcion', 'observaciones',
         )
         widgets: ClassVar[dict] = {
             'descripcion': forms.Textarea(attrs={'rows': 4}),
@@ -31,6 +31,13 @@ class ObraForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'gch-input'
         self.fields['codigo'].widget.attrs['autocapitalize'] = 'characters'
+        self.fields['espacio'].queryset = Ubicacion.objects.select_related('planta__edificio')
+        self.fields['espacio'].empty_label = 'Sin asignar al catálogo'
+        self.fields['ubicacion'].label = 'Ubicación en texto libre'
+        self.fields['ubicacion'].help_text = (
+            'Se conserva como referencia. Si seleccionas un espacio del catálogo, '
+            'ese espacio será la ubicación actual.'
+        )
 
 
 class MultipleImageInput(forms.ClearableFileInput):
@@ -91,3 +98,43 @@ class GaleriaForm(forms.Form):
         help_text='Se aplica a las imágenes seleccionadas.',
         widget=forms.TextInput(attrs={'class': 'gch-input'}),
     )
+
+
+class CatalogoFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'gch-input'
+        if self.instance.pk:
+            # Keep the hierarchy stable when its labels are edited.
+            for parent in ('edificio', 'planta'):
+                if parent in self.fields:
+                    self.fields[parent].disabled = True
+                    self.fields[parent].help_text = 'La pertenencia de un espacio existente se conserva.'
+
+
+class EdificioForm(CatalogoFormMixin, forms.ModelForm):
+    class Meta:
+        model = Edificio
+        fields = ('codigo', 'nombre', 'direccion', 'descripcion')
+        widgets: ClassVar[dict] = {'descripcion': forms.Textarea(attrs={'rows': 3})}
+
+    def clean_codigo(self):
+        return self.cleaned_data['codigo'].upper()
+
+
+class PlantaForm(CatalogoFormMixin, forms.ModelForm):
+    class Meta:
+        model = Planta
+        fields = ('edificio', 'nombre', 'orden')
+
+
+class UbicacionForm(CatalogoFormMixin, forms.ModelForm):
+    class Meta:
+        model = Ubicacion
+        fields = ('planta', 'nombre', 'descripcion')
+        widgets: ClassVar[dict] = {'descripcion': forms.Textarea(attrs={'rows': 3})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['planta'].queryset = Planta.objects.select_related('edificio')
