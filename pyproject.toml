@@ -18,3 +18,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["config*", "gebichart*"]
+
+[tool.ruff.lint.per-file-ignores]
+# Django generates mutable class attributes in migrations.
+"**/migrations/*.py" = ["RUF012"]
