@@ -4,6 +4,7 @@
 <p class="eyebrow">PATRIMONIO / UBICACIONES</p>
 <div class="page-heading"><div><h1>Un lugar para cada obra</h1><p class="intro">Organiza el patrimonio por edificio, planta y espacio.</p></div>{% if perms.gebichart.add_edificio %}<a class="gch-button gch-button--primary" href="{% url 'edificio_create' %}">Añadir edificio</a>{% endif %}</div>
 <form method="get" class="gch-card search-form" role="search" aria-label="Buscar ubicaciones"><div class="search-query"><label class="gch-label" for="q">Buscar en el catálogo</label><input class="gch-input" id="q" name="q" type="search" value="{{ q }}" placeholder="Edificio, planta o espacio"></div><button class="gch-button gch-button--primary" type="submit">Buscar</button>{% if q or edificio_seleccionado %}<a href="{% url 'catalogo' %}">Ver catálogo completo</a>{% endif %}</form>
+<p><a class="gch-button gch-button--secondary" href="{% url 'catalogo_print' %}?q={{ q|urlencode }}&amp;edificio={{ edificio_seleccionado|urlencode }}">Imprimir listado</a></p>
 <p class="results-count">{{ paginator.count }} edificio{{ paginator.count|pluralize:'s' }}{% if q %} con coincidencias{% endif %}</p>
 {% for edificio in edificios %}
 <section class="gch-card building-card" id="edificio-{{ edificio.pk }}" aria-labelledby="edificio-title-{{ edificio.pk }}">

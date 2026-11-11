@@ -11,6 +11,7 @@
   <button class="gch-button gch-button--primary" type="submit">Buscar</button>
   {% if q or tipo or conservacion or edificio %}<a href="{% url 'obra_list' %}">Limpiar filtros</a>{% endif %}
 </form>
+<p><a class="gch-button gch-button--secondary" href="{% url 'obras_print' %}?{{ filtros }}">Imprimir listado</a></p>
 <p class="results-count" role="status">{{ paginator.count }} resultado{{ paginator.count|pluralize:"s" }}</p>
 {% if obras %}
 <div class="table-scroll" role="region" aria-label="Obras del inventario" tabindex="0">

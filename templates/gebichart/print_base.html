@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}{{ report_title }} · GEBICHART{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'gebichart/css/print.css' %}"><script src="{% static 'gebichart/js/print.js' %}" defer></script>{% endblock %}
+{% block layout %}
+<main id="contenido" class="print-report" tabindex="-1">
+<nav class="report-toolbar" aria-label="Opciones del listado"><a class="gch-button gch-button--secondary" href="{{ return_url }}">Volver al listado</a><button class="gch-button gch-button--primary" type="button" data-print>Imprimir / Guardar PDF</button></nav>
+<h1>{{ report_title }}</h1>
+<p class="report-date">Generado el {{ report_date|date:'d/m/Y' }} a las {{ report_date|date:'H:i' }} (hora de Madrid).</p>
+{% if report_filters %}<div class="report-filters">{% for label, value in report_filters %}<span><strong>{{ label }}:</strong> {{ value }}</span>{% endfor %}</div>{% else %}<p class="report-date">Sin filtros aplicados.</p>{% endif %}
+<p class="report-note">Incluye todos los resultados de los filtros seleccionados. En el diálogo de impresión puedes elegir una impresora o guardar como PDF.</p>
+{% block report_content %}{% endblock %}
+</main>
+{% endblock %}
