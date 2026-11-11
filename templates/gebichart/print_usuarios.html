@@ -1,0 +1,2 @@
+{% extends 'gebichart/print_base.html' %}
+{% block report_content %}<p class="report-count">{{ report_total }} usuario{{ report_total|pluralize:'s' }}</p><div class="report-table-wrap">{% include 'gebichart/_usuarios_table.html' %}</div>{% endblock %}

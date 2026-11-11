@@ -6,6 +6,7 @@
     <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}><img src="{% static 'gebichart/icons/inicio.svg' %}" alt="">Inicio</a>
     {% if perms.gebichart.view_obra %}<a href="{% url 'obra_list' %}" {% if '/inventario/' in request.path %}aria-current="page"{% endif %}><img src="{% static 'gebichart/icons/inventario.svg' %}" alt="">Inventario</a>{% endif %}
     {% if perms.gebichart.view_edificio and perms.gebichart.view_planta and perms.gebichart.view_ubicacion %}<a href="{% url 'catalogo' %}" {% if '/ubicaciones/' in request.path %}aria-current="page"{% endif %}><img src="{% static 'gebichart/icons/ubicaciones.svg' %}" alt="">Ubicaciones</a>{% endif %}
+    {% if perms.auth.view_user %}<a href="{% url 'usuarios_list' %}" {% if '/usuarios/' in request.path %}aria-current="page"{% endif %}><img src="{% static 'gebichart/icons/usuarios.svg' %}" alt="">Usuarios</a>{% endif %}
     {% if user.is_staff %}<a href="{% url 'admin:index' %}"><img src="{% static 'gebichart/icons/usuarios.svg' %}" alt="">Administración</a>{% endif %}
     <p class="sidebar-note">Una identidad para proteger<br>lo que nos pertenece.</p>
   </nav>

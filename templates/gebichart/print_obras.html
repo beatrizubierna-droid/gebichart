@@ -1,0 +1,5 @@
+{% extends 'gebichart/print_base.html' %}
+{% block report_content %}
+<p class="report-count">{{ report_total }} obra{{ report_total|pluralize:'s' }}</p>
+<div class="report-table-wrap"><table class="report-table"><caption>Inventario de obras</caption><thead><tr><th scope="col">Código</th><th scope="col">Título</th><th scope="col">Autoría</th><th scope="col">Tipo</th><th scope="col">Ubicación actual</th><th scope="col">Conservación</th></tr></thead><tbody>{% for obra in obras %}<tr><td class="report-code">{{ obra.codigo }}</td><td>{{ obra.titulo }}</td><td>{{ obra.autoria|default:'Sin registrar' }}</td><td>{{ obra.get_tipo_display }}</td><td>{{ obra.ubicacion_actual|default:'Sin registrar' }}</td><td>{{ obra.get_conservacion_display }}</td></tr>{% empty %}<tr><td colspan="6">No hay obras que coincidan con los filtros seleccionados.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

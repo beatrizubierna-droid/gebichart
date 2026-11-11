@@ -16,6 +16,8 @@ Python 3.12 o posterior, SQLite local para desarrollo e identidad GEBICHART 3.0.
   la ficha, apertura de originales y eliminación con confirmación.
 - Catálogo de edificios, plantas y ubicaciones, con alta/edición y consulta
   de las obras asignadas a cada espacio.
+- Listados imprimibles de obras, usuarios y ubicaciones, con los filtros aplicados
+  y todos los resultados. Impresión o guardado en PDF desde el navegador.
 - Administración Django de obras, ubicaciones, usuarios y grupos.
 
 La ubicación actual puede vincularse al catálogo. El texto libre anterior se
@@ -191,3 +193,34 @@ permisos de borrado. La gestión del catálogo también está disponible en admi
 
 Las capturas `ubicaciones-1440.jpg`, `ubicaciones-375.jpg`, `espacio-1440.jpg` y
 `espacio-375.jpg` de `docs/screenshots/` muestran datos ficticios de revisión.
+
+## Imprimir listados
+
+- **Inventario → Imprimir listado**: respeta búsqueda, tipo, conservación y edificio.
+- **Ubicaciones → Imprimir listado**: imprime edificios, plantas y espacios del
+  catálogo, con su búsqueda y selección de edificio. Incluye edificios sin plantas
+  y plantas sin espacios.
+- **Ficha de una ubicación → Imprimir obras de esta ubicación**: todas sus obras.
+- **Usuarios → Imprimir listado**: listado de cuentas con nombre, correo, grupos y
+  estado, con búsqueda y filtros por estado y grupo. También se accede desde
+  **Administración → Usuarios → Listado e impresión de usuarios**.
+
+La vista previa incluye todos los resultados, aunque el listado de pantalla tenga
+varias páginas. Pulsa **Imprimir / Guardar PDF** y elige la impresora o **Guardar
+como PDF** en el diálogo del navegador. El documento está preparado para A4
+horizontal, con cabeceras de tabla repetidas, fecha/hora de Madrid y resumen de
+filtros. Los botones y la navegación se ocultan en la impresión.
+
+Las rutas de impresión requieren los mismos permisos de consulta que sus listas.
+Para consultar/imprimir usuarios hace falta **Can view user / Ver usuario**
+(`auth.view_user`), además de iniciar sesión. Ser staff o pertenecer a un grupo de
+inventario no lo concede. El superusuario tiene acceso; no se cambian los grupos
+ni los permisos existentes. No se incluyen contraseñas, hashes ni tokens en los
+campos del listado. Las respuestas se sirven con caché privada/no-store.
+
+La impresión es de solo lectura y no necesita enviar formularios POST. No modifica
+obras, imágenes, ubicaciones ni cuentas. No añade migraciones ni dependencias.
+Actualiza con `git pull --ff-only` y reinicia mediante `bash scripts/dev.sh`.
+
+Las capturas `impresion-*` de `docs/screenshots/` utilizan únicamente registros
+ficticios de revisión. Los PDF utilizados en las pruebas no se incorporan al repositorio.
